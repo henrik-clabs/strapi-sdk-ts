@@ -5,7 +5,12 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "build": "tsup && npx fix-tsup-cjs"
+    "build": "tsup && npx fix-tsup-cjs",
+    "test-build":"./test-setup/build.sh",
+    "test-start":"npm run test-build && ./test-setup/start.sh",
+    "test-stop":"./test-setup/stop.sh",
+    "test-run": "npm run test-start && jest ; npm run test-stop",
+    "test": "jest"
   },
   "files": [
     "build/**"
@@ -31,6 +36,12 @@
     "axios": "^1.7.7"
   },
   "devDependencies": {
+    "@types/axios": "^0.9.36",
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "properties-reader": "^2.3.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
     "tsup": "^8.3.0",
     "typescript": "^5.6.3"
   },
