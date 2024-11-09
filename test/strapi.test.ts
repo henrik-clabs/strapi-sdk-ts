@@ -121,12 +121,13 @@ test('basic-author-crud', async () => {
     const result0 = await client.findAll("authors",as_filter(eq("name",data.name)))
     expect(result0.data.data.length).toBe(0)
 
-    // create testuser
+    // Create testuser
     const result1 = await client.create("authors", {data})
     //console.log(result1)
     expect(result1.status).toBe(201)
     expect(result1.data.data.documentId).toBeDefined()
 
+    // Check testuser was created
     const result2 = await client.findAll("authors",as_filter(eq("name","Sdk Testuser")))
     expect(result2.data.data.length).toBe(1)
 
