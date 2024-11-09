@@ -7,9 +7,9 @@
   "scripts": {
     "build": "tsup && npx fix-tsup-cjs",
     "test-build":"./test-setup/build.sh",
-    "test-start":"npm run test-build && ./test-setup/start.sh",
+    "test-start":"./test-setup/start.sh",
     "test-stop":"./test-setup/stop.sh",
-    "test-run": "npm run test-start && jest ; npm run test-stop",
+    "test-run": "npm run test-build && npm run test-start && npm run test ; npm run test-stop",
     "test": "jest"
   },
   "files": [
