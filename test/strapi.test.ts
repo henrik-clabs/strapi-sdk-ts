@@ -93,7 +93,7 @@ test('basic', async () => {
 
       // Check testuser was created
       const result1 = await client.findAll("authors",as_filter(eq("nameX","Sdk Testuser")))
-      console.log("result1", Object.keys(result1), result1.data)
+      //console.log("result1", Object.keys(result1), result1.data)
       expect(result1.status).toBe(400) // 400 validation error. Invalid key nameX
 
       // result1 [ 'data', 'status' ] 
