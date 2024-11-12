@@ -226,6 +226,8 @@ export class Strapi {
     async delete(resource: string, id: string | number): Promise<StrapiDeleteResponse> {
         try {
             const res = await this.axios.delete(`${resource}/${id}`);
+            //console.log(":::",res)
+            // statusText: 'No Content',
             return { status: res.status, deleted: res.status === DELETE_SUCCESS_CODE };
         } catch (e) {
             return Promise.reject(e);
