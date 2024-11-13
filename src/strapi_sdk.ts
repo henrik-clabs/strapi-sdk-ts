@@ -1,6 +1,6 @@
 // @ts-ignore
 import { AxiosRequestConfig } from 'axios';
-import Strapi, { StrapiClientArgs, StrapiDeleteResponse, StrapiResponse } from "./index"
+import { Strapi, StrapiClientArgs, StrapiDeleteResponse, StrapiResponse } from "./strapi"
 
 export interface StrapiSdkClientArgs {
     baseUrl?: string;
@@ -76,7 +76,7 @@ export function as_filter(
 }
 
 /**
- * Access layer for Strapi CMS
+ * Access layer for Strapi CMS v5
  * Uses low-level API (strapi.ts) for access
  */
 export class Strapi_Sdk  {

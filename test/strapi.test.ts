@@ -1,4 +1,4 @@
-import { and, as_filter, eq, or, Strapi_Sdk, StrapiSdkClientArgs } from "../src/strapi_sdk"
+import { and, as_filter, eq, or, Strapi_Sdk, StrapiSdkClientArgs } from "../src/index"
 
 var propertiesReader = require("properties-reader")
 var properties = propertiesReader(".env.local")
