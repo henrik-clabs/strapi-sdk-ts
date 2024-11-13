@@ -66,7 +66,7 @@ test('basic', async () => {
       expect(result.status).toBe(404)  // test api: 404 Not found 
 
       // Check testuser was created
-      const result1 = await client.findAll("authors",as_filter(eq("nameX","Sdk Testuser")))
+      const result1 = await client.findAll("authors",eq("nameX","Sdk Testuser"))
       //console.log("result1", Object.keys(result1), result1.data)
       expect(result1.status).toBe(400) // 400 validation error. Invalid key nameX
 
@@ -85,19 +85,19 @@ test('basic', async () => {
 
 
   test('basic-author', async () => {
-        const result0 = await client.findAll("authors",as_filter(eq("name","David Doe")))
+        const result0 = await client.findAll("authors",eq("name","David Doe"))
         expect(result0.status).toBe(200)
         expect(result0.data.data.length).toBe(1)
-        const result1 = await client.findAll("authors",as_filter(eq("name","David DoeXX")))
+        const result1 = await client.findAll("authors",eq("name","David DoeXX"))
         expect(result1.status).toBe(200)
         expect(result1.data.data.length).toBe(0)
-        const result2 = await client.findAll("authors",as_filter(eq("name","Sarah Baker")))
+        const result2 = await client.findAll("authors",eq("name","Sarah Baker"))
         expect(result2.status).toBe(200)
         expect(result2.data.data.length).toBe(1)
-        const result3 = await client.findAll("authors",as_filter(and(eq("name","David Doe"),eq("name","Sarah Baker"))))
+        const result3 = await client.findAll("authors",and(eq("name","David Doe"),eq("name","Sarah Baker")))
         expect(result3.status).toBe(200)
         expect(result3.data.data.length).toBe(0)
-        const result4 = await client.findAll("authors",as_filter(or(eq("name","David Doe"),eq("name","Sarah Baker"))))
+        const result4 = await client.findAll("authors",or(eq("name","David Doe"),eq("name","Sarah Baker")))
         expect(result4.status).toBe(200)
         expect(result4.data.data.length).toBe(2)
 });
@@ -109,7 +109,7 @@ test('basic-author-crud', async () => {
     }
 
     // Check test user does not exist
-    const result0 = await client.findAll("authors",as_filter(eq("name",data.name)))
+    const result0 = await client.findAll("authors",eq("name",data.name))
     expect(result0.status).toBe(200)
     expect(result0.data.data.length).toBe(0)
 
@@ -120,7 +120,7 @@ test('basic-author-crud', async () => {
     expect(result1.data.data.documentId).toBeDefined()
 
     // Check testuser was created
-    const result2 = await client.findAll("authors",as_filter(eq("name","Sdk Testuser")))
+    const result2 = await client.findAll("authors",eq("name","Sdk Testuser"))
     expect(result2.status).toBe(200)
     expect(result2.data.data.length).toBe(1)
 
@@ -132,7 +132,7 @@ test('basic-author-crud', async () => {
     expect(result3.status).toBe(200)
 
     // Check update happened
-    const result4 = await client.findAll("authors",as_filter(eq("name","Sdk Testuser")))
+    const result4 = await client.findAll("authors",eq("name","Sdk Testuser"))
     expect(result4.status).toBe(200)
     expect(result4.data.data.length).toBe(1)
     expect(result4.data.data[0].email).toBe(data1.email)
