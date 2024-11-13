@@ -1,94 +1,68 @@
-import { AxiosRequestConfig } from "../node_modules/axios/index"
-import Strapi, { StrapiClientArgs } from "../src/index"
+import { and, as_filter, eq, or, Strapi_Sdk, StrapiSdkClientArgs } from "../src/strapi_sdk"
 
 var propertiesReader = require("properties-reader")
 var properties = propertiesReader(".env.local")
 
-const options: StrapiClientArgs = {
+const optionssdk: StrapiSdkClientArgs = {
   baseUrl: properties.get("STRAPI_URL"),
-  apiKey: properties.get("STRAPI_API_KEY"),
-  axiosOptions:{ // https://axios-http.com/docs/req_config
-  validateStatus: function (status: number) {
-    //console.log("validateStatus ",status)
-    return true // always return a status. Never throw errors.
-    //return status >= 200 && status < 999; // always return a status. Never throw errors.
-  }},
+  apiKey: properties.get("STRAPI_API_KEY")
 }
 
-var client:Strapi
-
-export type StrapiPredicate = any
-
-/**
- * Equal predicate for Strapi Filters.
- *
- * @example
- * const name_filter = eq("name","logan")
- * // { name: { $eq: "logan" }}
- *
- * @param ...parms : column, value
- * @returns StrapiPredicate { column: { $eq: value }}
- */
-export function eq(...parms: any): StrapiPredicate {
-  const out = {} as StrapiPredicate
-  const name = parms[0]
-  const value = parms[1]
-
-  // @ts - expect-error Parameter 'name' implicitly has an 'any' type.ts(7006)
-  out[name] = { $eq: value }
-  return out
-}
-
-/**
- * And predicate function for Strapi Filter
- *
- * @example
- * const fullname = and( eq("first","logan"), eq("last","droid"))
- * // { $and:[{first: {$eq: "logan"}},{last: {$eq: "droid"}}]}
- *
- * @param parms : elements to by joined by AND
- * @returns StrapiPredicate {$and:[p1, p2 ...]}
- */
-export function and(...parms: any): StrapiPredicate {
-  const out = { $and: Array.from(arguments) } as StrapiPredicate
-  return out
-}
-
-export function or(...parms: any): StrapiPredicate {
-    const out = { $or: Array.from(arguments) } as StrapiPredicate
-    return out
-  }
-  
-/**
- * Create filter parameter for Strapi Requests
- * Can be used with predicates for And and Eq
- *
- * @example
- * const user = await client.findAll("auth-users", as_filter(eq("email","a.b@email.com")))
- * const user = await client.findAll("auth-users", as_filter(and(eq("email","a.b@email.com"),eq("name","Amorikie"))))
- *
- * @param predicates
- * @returns Pick<AxiosRequestConfig, params> {params: {filters: { predicates }}}
- */
-export function as_filter(
-  predicates: StrapiPredicate
-): Pick<AxiosRequestConfig, "params"> {
-  return { params: { filters: predicates } }
-}
-
+var client:Strapi_Sdk
 
 beforeAll( () => {
-    client = new Strapi(options)
-})
-beforeEach( () => {
-    jest.retryTimes(0)
+    client  = new Strapi_Sdk(optionssdk)
 })
 
-describe('Strapi CRUD', () => {
+describe('Strapi SDK predicates', () => {
+  test('eq', () => {
+    expect(eq("nameX","Sdk Testuser")).toEqual({nameX:{$eq:"Sdk Testuser"}})
+    expect(as_filter(eq("nameX","Sdk Testuser"))).toEqual({params: {filters: {nameX:{$eq:"Sdk Testuser"}}}})
+  })
+
+  test('and', () => {
+    expect(and(eq("first","logan"), eq("last","droid"))).toEqual({$and:[{first: {$eq: "logan"}},{last: {$eq: "droid"}}]})
+  })
+
+  test('or', () => {
+    expect(or(eq("first","logan"), eq("last","droid"))).toEqual({$or:[{first: {$eq: "logan"}},{last: {$eq: "droid"}}]})
+  })
+
+  test('andor', () => {
+    // This shows why the helpers exists
+    expect(and(or(eq("first","logan"),eq("nameX","Sdk Testuser")),eq("last","droid"))).toEqual(
+      {
+        $and:  [
+          {
+            $or:  [
+              {
+                first:  {
+                  $eq: "logan",
+                },
+              },
+              {
+                nameX:  {
+                  $eq: "Sdk Testuser",
+                },
+              },
+            ],
+          },
+          {
+            last:  {
+              $eq: "droid",
+            },
+          },
+        ],
+      }
+  )
+})
+})
+
+describe('Strapi SDK CRUD', () => {
 
 
 test('basic', async () => {
-      const result = await client.findOne("test",0)
+      const result = await client.findOne("test","0")
       expect(result.status).toBe(404)  // test api: 404 Not found 
 
       // Check testuser was created
@@ -172,22 +146,25 @@ test('basic-author-crud', async () => {
     expect(result5.data.data.email).toBe(data1.email)
     expect(result5.data.data.email).not.toBe(data.email)
 
-
     // Delete testuser
     const result6 = await client.delete("authors",result1.data.data.documentId)
     //console.log(result6)
     expect(result6.status).toBe(204)
     expect(result6.deleted).toBeTruthy()
 
-    // // elete testuser again should fail
-    // const result6a = await client.delete("authors",result1.data.data.documentId)
-    // // console.log(result6a)
-    // expect(result6a.status).not.toBe(204)
-    // expect(result6a.deleted).not.toBeTruthy()
+    // elete testuser again should fail
+    const result6a = await client.delete("authors",result1.data.data.documentId)
+    // console.log(result6a)
+    expect(result6a.status).toBe(404)
+    expect(result6a.deleted).not.toBeTruthy()
     
     // Check Delete happened
     const result7 = await client.findAll("authors",as_filter(eq("name",data.name)))
     expect(result7.data.data.length).toBe(0)
+ 
+    // Check Delete happened
+    const result8 = await client.findOne("authors",result1.data.data.documentId)
+    expect(result8.status).toBe(404)
     
 });
 
