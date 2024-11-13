@@ -168,4 +168,10 @@ test('basic-author-crud', async () => {
     
 });
 
+test('findAll', async () => {
+   // Check Delete happened
+   const result0 = await client.findAll("authors")
+   expect(result0.status).toBe(200)
+   expect(result0.data.data.length).toBe(2)
+})
 })

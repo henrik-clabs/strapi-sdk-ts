@@ -97,9 +97,11 @@ export class StrapiSdk  {
 
     async findAll<T =any>(
         resource: string,
-        config: StrapiPredicate
+        config?: StrapiPredicate
       ): Promise<StrapiResponse<T>> {
-        if ("params" in config) // AxiosRequestConfig
+        if (!config)
+        return await this.#client.findAll(resource)
+        else if ("params" in config) // AxiosRequestConfig
         return await this.#client.findAll(resource, config)
         else
         return await this.#client.findAll(resource,as_filter(config))
