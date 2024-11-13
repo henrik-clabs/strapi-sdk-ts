@@ -79,7 +79,7 @@ export function as_filter(
  * Access layer for Strapi CMS v5
  * Uses low-level API (strapi.ts) for access
  */
-export class Strapi_Sdk  {
+export class StrapiSdk  {
     #client: Strapi
 
     constructor(params?: StrapiSdkClientArgs) {
@@ -95,10 +95,10 @@ export class Strapi_Sdk  {
         return await this.#client.findOne(resource,docid)
     }
 
-    async findAll(
+    async findAll<T =any>(
         resource: string,
         config: StrapiPredicate
-      ) {
+      ): Promise<StrapiResponse<T>> {
         if ("params" in config) // AxiosRequestConfig
         return await this.#client.findAll(resource, config)
         else

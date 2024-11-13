@@ -1,4 +1,4 @@
-import { and, as_filter, eq, or, Strapi_Sdk, StrapiSdkClientArgs } from "../src/index"
+import { and, as_filter, eq, or, StrapiSdk, StrapiSdkClientArgs } from "../src/index"
 
 var propertiesReader = require("properties-reader")
 var properties = propertiesReader(".env.local")
@@ -8,10 +8,10 @@ const optionssdk: StrapiSdkClientArgs = {
   apiKey: properties.get("STRAPI_API_KEY")
 }
 
-var client:Strapi_Sdk
+var client:StrapiSdk
 
 beforeAll( () => {
-    client  = new Strapi_Sdk(optionssdk)
+    client  = new StrapiSdk(optionssdk)
 })
 
 describe('Strapi SDK predicates', () => {

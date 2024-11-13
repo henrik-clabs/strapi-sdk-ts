@@ -1,4 +1,4 @@
-import {Strapi_Sdk} from './strapi_sdk'
+import {StrapiSdk} from './strapi_sdk'
 
 export * from './strapi_sdk'
-export default Strapi_Sdk;
+export default StrapiSdk;
